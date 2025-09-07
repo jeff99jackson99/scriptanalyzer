@@ -23,10 +23,15 @@ class NeedGodScriptFlow:
     """Manages the NeedGod script flow logic with proper branching"""
     
     def __init__(self):
-        self.script_data = {}
+        self.script_data = {"questions": {}, "flow_logic": {}, "raw_content": ""}
         self.current_question = 1
         self.conversation_history = []
-        self.load_script_data()
+        try:
+            self.load_script_data()
+        except Exception as e:
+            st.error(f"Error initializing script flow: {e}")
+            # Load embedded script as fallback
+            self.load_embedded_script()
     
     def load_script_data(self):
         """Load script data from text file"""
@@ -781,6 +786,10 @@ def main():
     if "current_question" not in st.session_state:
         st.session_state.current_question = 1
     
+    # Ensure current_question is always a number
+    if not isinstance(st.session_state.current_question, (int, float)):
+        st.session_state.current_question = 1
+    
     if "conversation_history" not in st.session_state:
         st.session_state.conversation_history = []
     
@@ -797,18 +806,24 @@ def main():
         
         st.header("📊 Progress")
         total_questions = len(script_flow.script_data.get("questions", {}))
-        if total_questions > 0:
-            progress = st.session_state.current_question / total_questions
-            st.progress(progress)
-            st.write(f"Question {st.session_state.current_question} of {total_questions}")
-            
-            # Show question list
-            st.subheader("📋 All Questions")
-            for q_num in sorted(script_flow.script_data["questions"].keys()):
-                status = "🟢" if q_num == st.session_state.current_question else "⚪"
-                if q_num < st.session_state.current_question:
-                    status = "✅"
-                st.write(f"{status} Q{q_num}")
+        if total_questions > 0 and isinstance(st.session_state.current_question, (int, float)):
+            try:
+                progress = st.session_state.current_question / total_questions
+                st.progress(progress)
+                st.write(f"Question {st.session_state.current_question} of {total_questions}")
+                
+                # Show question list
+                st.subheader("📋 All Questions")
+                for q_num in sorted(script_flow.script_data["questions"].keys()):
+                    status = "🟢" if q_num == st.session_state.current_question else "⚪"
+                    if isinstance(st.session_state.current_question, (int, float)) and q_num < st.session_state.current_question:
+                        status = "✅"
+                    st.write(f"{status} Q{q_num}")
+            except (TypeError, ZeroDivisionError):
+                st.write("Progress calculation error - starting fresh")
+                st.session_state.current_question = 1
+        else:
+            st.write("Loading questions...")
     
     # Main content area
     col1, col2 = st.columns([2, 1])
