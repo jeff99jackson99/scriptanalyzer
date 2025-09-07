@@ -763,6 +763,14 @@ This has been a fantastic chat! My name is …… been great chatting with you.
                 else:
                     return next_action
         
+        # Special handling for question 1 - "heaven and hell" should go to special flow
+        if current_q == 1 and ("heaven" in answer_lower and "hell" in answer_lower):
+            return "heaven_question"
+        
+        # Special handling for question 1 - "reincarnation" or other theories should go to Q2
+        if current_q == 1 and ("reincarnation" in answer_lower or "other" in answer_lower or "not sure" in answer_lower):
+            return 2
+        
         # Default: next sequential question
         return current_q + 1 if current_q + 1 in self.script_data["questions"] else None
     
@@ -960,7 +968,10 @@ def process_answer(answer: str):
     
     if next_q:
         st.session_state.current_question = next_q
-        st.success(f"✅ Answer recorded. Moving to next question.")
+        if isinstance(next_q, str):
+            st.success(f"✅ Answer recorded. Moving to special response.")
+        else:
+            st.success(f"✅ Answer recorded. Moving to Question {next_q}.")
     else:
         st.success("✅ Answer recorded. Conversation complete!")
     
