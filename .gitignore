@@ -48,7 +48,7 @@ Thumbs.db
 .streamlit/
 
 # Generated files
-script_content.txt
+# script_content.txt
 
 # Environment variables
 .env
