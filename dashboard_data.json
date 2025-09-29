@@ -1,0 +1,137 @@
+{
+  "last_updated": "2025-09-29T13:07:47.277041",
+  "summary": {
+    "total_pending": 1736,
+    "total_dealers": 146,
+    "total_amount": 0
+  },
+  "overdue_breakdown": {
+    "current_pending": 1736,
+    "30_60_days": 0,
+    "60_90_days": 0,
+    "90_120_days": 0,
+    "120_plus_days": 0
+  },
+  "top_dealers": [
+    {
+      "rank": 1,
+      "dealer_name": "Kane Auto Finance LLC",
+      "total_contracts": 214,
+      "total_value": 0.0
+    },
+    {
+      "rank": 2,
+      "dealer_name": "VIP Motorsports",
+      "total_contracts": 95,
+      "total_value": 0.0
+    },
+    {
+      "rank": 3,
+      "dealer_name": "Highline Automotive",
+      "total_contracts": 79,
+      "total_value": 0.0
+    },
+    {
+      "rank": 4,
+      "dealer_name": "TxTCharlie",
+      "total_contracts": 55,
+      "total_value": 0.0
+    },
+    {
+      "rank": 5,
+      "dealer_name": "Autos of Dallas",
+      "total_contracts": 55,
+      "total_value": 0.0
+    },
+    {
+      "rank": 6,
+      "dealer_name": "Auto Republic",
+      "total_contracts": 51,
+      "total_value": 0.0
+    },
+    {
+      "rank": 7,
+      "dealer_name": "Michael's Car Center",
+      "total_contracts": 48,
+      "total_value": 0.0
+    },
+    {
+      "rank": 8,
+      "dealer_name": "Kargar Motors of Manassas",
+      "total_contracts": 45,
+      "total_value": 0.0
+    },
+    {
+      "rank": 9,
+      "dealer_name": "EVO Motors",
+      "total_contracts": 42,
+      "total_value": 0.0
+    },
+    {
+      "rank": 10,
+      "dealer_name": "VIP Auto Enterprise",
+      "total_contracts": 40,
+      "total_value": 0.0
+    },
+    {
+      "rank": 11,
+      "dealer_name": "Carson Cars",
+      "total_contracts": 38,
+      "total_value": 0.0
+    },
+    {
+      "rank": 12,
+      "dealer_name": "Mudarri Motorsports",
+      "total_contracts": 36,
+      "total_value": 0.0
+    },
+    {
+      "rank": 13,
+      "dealer_name": "Valley VIP Auto Sales",
+      "total_contracts": 35,
+      "total_value": 0.0
+    },
+    {
+      "rank": 14,
+      "dealer_name": "Auto Gallery Jacksonville ",
+      "total_contracts": 31,
+      "total_value": 0.0
+    },
+    {
+      "rank": 15,
+      "dealer_name": "American Dealer ",
+      "total_contracts": 30,
+      "total_value": 0.0
+    },
+    {
+      "rank": 16,
+      "dealer_name": "Tropical Auto Sales",
+      "total_contracts": 27,
+      "total_value": 0.0
+    },
+    {
+      "rank": 17,
+      "dealer_name": "Alfa Romeo of Plano",
+      "total_contracts": 26,
+      "total_value": 0.0
+    },
+    {
+      "rank": 18,
+      "dealer_name": "Mission Motors",
+      "total_contracts": 25,
+      "total_value": 0.0
+    },
+    {
+      "rank": 19,
+      "dealer_name": "A2Z Auto Group LLC",
+      "total_contracts": 25,
+      "total_value": 0.0
+    },
+    {
+      "rank": 20,
+      "dealer_name": "King Motors",
+      "total_contracts": 25,
+      "total_value": 0.0
+    }
+  ]
+}
