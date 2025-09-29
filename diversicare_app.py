@@ -42,8 +42,22 @@ class DiversicareDataProcessor:
             
             # Load Excel file (AllPending)
             if os.path.exists("AllPending-09292025.xlsx"):
-                self.pending_data = pd.read_excel("AllPending-09292025.xlsx")
-                st.success("✅ Loaded pending contracts data from Excel")
+                try:
+                    # Try to read the Excel file, handling potential formatting issues
+                    self.pending_data = pd.read_excel("AllPending-09292025.xlsx", engine='openpyxl')
+                    # Remove any completely empty rows
+                    self.pending_data = self.pending_data.dropna(how='all')
+                    st.success("✅ Loaded pending contracts data from Excel")
+                except Exception as e:
+                    st.warning(f"⚠️ Issue loading Excel file: {e}")
+                    # Try alternative approach
+                    try:
+                        self.pending_data = pd.read_excel("AllPending-09292025.xlsx", engine='xlrd')
+                        self.pending_data = self.pending_data.dropna(how='all')
+                        st.success("✅ Loaded pending contracts data from Excel (alternative method)")
+                    except Exception as e2:
+                        st.error(f"❌ Failed to load Excel file: {e2}")
+                        self.pending_data = None
             
             # Process and combine data
             self.process_data()
@@ -73,19 +87,36 @@ class DiversicareDataProcessor:
     def clean_data(self):
         """Clean and standardize the data"""
         if self.processed_data is not None:
+            # Remove any completely empty rows
+            self.processed_data = self.processed_data.dropna(how='all')
+            
             # Convert date columns
             date_columns = ['Effective Date', 'Date Cancelled']
             for col in date_columns:
                 if col in self.processed_data.columns:
                     self.processed_data[col] = pd.to_datetime(self.processed_data[col], errors='coerce')
             
-            # Convert numeric columns
+            # Convert numeric columns - handle mixed types
             numeric_columns = ['MSRP', 'Loan Amount', 'APR', 'Customer Cost', 'Dealer Cost', 'Odometer']
             for col in numeric_columns:
                 if col in self.processed_data.columns:
-                    self.processed_data[col] = pd.to_numeric(self.processed_data[col], errors='coerce')
+                    # First convert to string, then to numeric to handle mixed types
+                    self.processed_data[col] = pd.to_numeric(
+                        self.processed_data[col].astype(str).str.replace(r'[^\d.-]', '', regex=True), 
+                        errors='coerce'
+                    )
             
-            # Fill missing values
+            # Fill missing values with appropriate defaults
+            self.processed_data = self.processed_data.fillna({
+                'Loan Amount': 0,
+                'MSRP': 0,
+                'APR': 0,
+                'Customer Cost': 0,
+                'Dealer Cost': 0,
+                'Odometer': 0
+            })
+            
+            # Fill other missing values with empty string
             self.processed_data = self.processed_data.fillna('')
     
     def get_summary_stats(self):
