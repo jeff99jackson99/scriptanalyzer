@@ -43,18 +43,35 @@ class DiversicareDataProcessor:
             # Load Excel file (AllPending)
             if os.path.exists("AllPending-09292025.xlsx"):
                 try:
-                    # Try to read the Excel file, handling potential formatting issues
-                    self.pending_data = pd.read_excel("AllPending-09292025.xlsx", engine='openpyxl')
+                    # Read the correct sheet with contract data (no header initially)
+                    self.pending_data = pd.read_excel("AllPending-09292025.xlsx", 
+                                                    sheet_name='RPT908 - Contract Transaction D', 
+                                                    engine='openpyxl', 
+                                                    header=None)
+                    
+                    # The header is in row 2 (0-indexed), data starts from row 3
+                    if len(self.pending_data) > 3:
+                        # Use row 2 as column names
+                        self.pending_data.columns = self.pending_data.iloc[2]
+                        # Drop the header rows and keep only data
+                        self.pending_data = self.pending_data.iloc[3:].reset_index(drop=True)
+                    
                     # Remove any completely empty rows
                     self.pending_data = self.pending_data.dropna(how='all')
-                    st.success("✅ Loaded pending contracts data from Excel")
+                    st.success(f"✅ Loaded {len(self.pending_data)} pending contracts from Excel")
                 except Exception as e:
                     st.warning(f"⚠️ Issue loading Excel file: {e}")
                     # Try alternative approach
                     try:
-                        self.pending_data = pd.read_excel("AllPending-09292025.xlsx", engine='xlrd')
+                        self.pending_data = pd.read_excel("AllPending-09292025.xlsx", 
+                                                        sheet_name='RPT908 - Contract Transaction D',
+                                                        engine='xlrd',
+                                                        header=None)
+                        if len(self.pending_data) > 3:
+                            self.pending_data.columns = self.pending_data.iloc[2]
+                            self.pending_data = self.pending_data.iloc[3:].reset_index(drop=True)
                         self.pending_data = self.pending_data.dropna(how='all')
-                        st.success("✅ Loaded pending contracts data from Excel (alternative method)")
+                        st.success(f"✅ Loaded {len(self.pending_data)} pending contracts from Excel (alternative method)")
                     except Exception as e2:
                         st.error(f"❌ Failed to load Excel file: {e2}")
                         self.pending_data = None
@@ -67,22 +84,25 @@ class DiversicareDataProcessor:
     
     def process_data(self):
         """Process and combine all data sources"""
-        if self.contracts_data is not None and self.pending_data is not None:
-            # Combine the datasets
-            # First, ensure both have the same column structure
-            if 'Effective Date' in self.contracts_data.columns:
-                self.contracts_data['Effective Date'] = pd.to_datetime(self.contracts_data['Effective Date'], errors='coerce')
-            
-            if 'Effective Date' in self.pending_data.columns:
-                self.pending_data['Effective Date'] = pd.to_datetime(self.pending_data['Effective Date'], errors='coerce')
-            
-            # Combine datasets
-            self.processed_data = pd.concat([self.contracts_data, self.pending_data], ignore_index=True)
+        # For now, let's focus on the Excel data since that's where the 1150+ contracts are
+        if self.pending_data is not None:
+            # Use Excel data as the primary dataset
+            self.processed_data = self.pending_data.copy()
             
             # Clean and process the data
             self.clean_data()
             
-            st.success(f"✅ Processed {len(self.processed_data)} total contracts")
+            st.success(f"✅ Processed {len(self.processed_data)} pending contracts from Excel")
+        elif self.contracts_data is not None:
+            # Fallback to CSV data if Excel is not available
+            self.processed_data = self.contracts_data.copy()
+            
+            # Clean and process the data
+            self.clean_data()
+            
+            st.success(f"✅ Processed {len(self.processed_data)} contracts from CSV")
+        else:
+            st.warning("No data available to process")
     
     def clean_data(self):
         """Clean and standardize the data"""
@@ -124,14 +144,41 @@ class DiversicareDataProcessor:
         if self.processed_data is None:
             return {}
         
+        # Calculate total loan amount from available amount columns
+        total_loan_amount = 0
+        amount_columns = ['Amount', 'Loan Amount', 'Contract Amount', 'Premium Amount']
+        for col in amount_columns:
+            if col in self.processed_data.columns:
+                # Convert to numeric, handling any non-numeric values
+                numeric_amounts = pd.to_numeric(self.processed_data[col], errors='coerce')
+                total_loan_amount = numeric_amounts.sum()
+                break
+        
+        # Calculate average loan amount
+        average_loan_amount = total_loan_amount / len(self.processed_data) if len(self.processed_data) > 0 else 0
+        
+        # Get date range from available date columns
+        date_columns = ['Contract Sale Date', 'Effective Date', 'Transaction Date', 'Billed Date']
+        earliest_date = None
+        latest_date = None
+        
+        for col in date_columns:
+            if col in self.processed_data.columns:
+                dates = pd.to_datetime(self.processed_data[col], errors='coerce')
+                if not dates.isna().all():
+                    if earliest_date is None or dates.min() < earliest_date:
+                        earliest_date = dates.min()
+                    if latest_date is None or dates.max() > latest_date:
+                        latest_date = dates.max()
+        
         stats = {
             'total_contracts': len(self.processed_data),
             'total_dealers': self.processed_data['Dealer Name'].nunique() if 'Dealer Name' in self.processed_data.columns else 0,
-            'total_loan_amount': self.processed_data['Loan Amount'].sum() if 'Loan Amount' in self.processed_data.columns else 0,
-            'average_loan_amount': self.processed_data['Loan Amount'].mean() if 'Loan Amount' in self.processed_data.columns else 0,
+            'total_loan_amount': total_loan_amount,
+            'average_loan_amount': average_loan_amount,
             'date_range': {
-                'earliest': self.processed_data['Effective Date'].min() if 'Effective Date' in self.processed_data.columns else None,
-                'latest': self.processed_data['Effective Date'].max() if 'Effective Date' in self.processed_data.columns else None
+                'earliest': earliest_date,
+                'latest': latest_date
             }
         }
         return stats
@@ -141,13 +188,48 @@ class DiversicareDataProcessor:
         if self.processed_data is None or 'Dealer Name' not in self.processed_data.columns:
             return pd.DataFrame()
         
-        dealer_summary = self.processed_data.groupby('Dealer Name').agg({
-            'Waiver No': 'count',
-            'Loan Amount': ['sum', 'mean'],
-            'Effective Date': ['min', 'max']
-        }).round(2)
+        # Find the appropriate columns for counting and amounts
+        count_col = 'Contract Number' if 'Contract Number' in self.processed_data.columns else 'Waiver No'
         
-        dealer_summary.columns = ['Contract Count', 'Total Loan Amount', 'Avg Loan Amount', 'First Contract', 'Last Contract']
+        # Find amount column
+        amount_col = None
+        amount_columns = ['Amount', 'Loan Amount', 'Contract Amount', 'Premium Amount']
+        for col in amount_columns:
+            if col in self.processed_data.columns:
+                amount_col = col
+                break
+        
+        # Find date column
+        date_col = None
+        date_columns = ['Contract Sale Date', 'Effective Date', 'Transaction Date', 'Billed Date']
+        for col in date_columns:
+            if col in self.processed_data.columns:
+                date_col = col
+                break
+        
+        # Build aggregation dictionary
+        agg_dict = {count_col: 'count'}
+        if amount_col:
+            agg_dict[amount_col] = ['sum', 'mean']
+        if date_col:
+            agg_dict[date_col] = ['min', 'max']
+        
+        dealer_summary = self.processed_data.groupby('Dealer Name').agg(agg_dict).round(2)
+        
+        # Flatten column names
+        dealer_summary.columns = [' '.join(col).strip() for col in dealer_summary.columns.values]
+        
+        # Rename columns to standard names
+        column_mapping = {
+            f'{count_col} count': 'Contract Count',
+            f'{amount_col} sum': 'Total Amount' if amount_col else 'Total Amount',
+            f'{amount_col} mean': 'Avg Amount' if amount_col else 'Avg Amount',
+            f'{date_col} min': 'First Contract' if date_col else 'First Contract',
+            f'{date_col} max': 'Last Contract' if date_col else 'Last Contract'
+        }
+        
+        dealer_summary = dealer_summary.rename(columns=column_mapping)
+        
         return dealer_summary.sort_values('Contract Count', ascending=False)
     
     def get_monthly_trends(self):
