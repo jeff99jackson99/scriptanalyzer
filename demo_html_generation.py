@@ -45,7 +45,8 @@ def main():
     print("\n📋 Top 5 Dealers by Contract Count:")
     dealer_summary = processor.get_dealer_summary()
     for i, (dealer, row) in enumerate(dealer_summary.head(5).iterrows(), 1):
-        print(f"{i}. {dealer}: {row['Contract Count']} contracts, ${row['Total Loan Amount']:,.2f} total")
+        total_amount = row.get('Total Amount', row.get('Total Loan Amount', 0))
+        print(f"{i}. {dealer}: {row['Contract Count']} contracts, ${total_amount:,.2f} total")
 
 if __name__ == "__main__":
     main()

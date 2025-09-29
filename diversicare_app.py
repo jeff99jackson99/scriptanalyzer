@@ -386,14 +386,24 @@ class DiversicareDataProcessor:
         
         # Add dealer data
         for dealer, row in dealer_summary.head(20).iterrows():
+            # Handle different column names
+            total_amount = row.get('Total Amount', row.get('Total Loan Amount', 0))
+            avg_amount = row.get('Avg Amount', row.get('Avg Loan Amount', 0))
+            first_contract = row.get('First Contract', 'N/A')
+            last_contract = row.get('Last Contract', 'N/A')
+            
+            # Format dates
+            first_date = first_contract.strftime('%Y-%m-%d') if pd.notna(first_contract) and hasattr(first_contract, 'strftime') else 'N/A'
+            last_date = last_contract.strftime('%Y-%m-%d') if pd.notna(last_contract) and hasattr(last_contract, 'strftime') else 'N/A'
+            
             html_content += f"""
                             <tr>
                                 <td>{dealer}</td>
                                 <td>{row['Contract Count']}</td>
-                                <td>${row['Total Loan Amount']:,.2f}</td>
-                                <td>${row['Avg Loan Amount']:,.2f}</td>
-                                <td>{row['First Contract'].strftime('%Y-%m-%d') if pd.notna(row['First Contract']) else 'N/A'}</td>
-                                <td>{row['Last Contract'].strftime('%Y-%m-%d') if pd.notna(row['Last Contract']) else 'N/A'}</td>
+                                <td>${total_amount:,.2f}</td>
+                                <td>${avg_amount:,.2f}</td>
+                                <td>{first_date}</td>
+                                <td>{last_date}</td>
                             </tr>
             """
         
