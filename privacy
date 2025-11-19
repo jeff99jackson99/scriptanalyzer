@@ -1,97 +1,173 @@
-# Gizmodo App - Privacy Compliance Documentation
+# Gizmodo App - Privacy Policy
 
-## App Store Privacy Policy Compliance (5.1.4 Legal: Privacy - Kids)
+**Last Updated: November 2025**
 
-This document outlines the privacy compliance measures implemented in the Gizmodo app to meet App Store requirements and address the "5.1.4 Legal: Privacy - Kids" rejection.
+## Introduction
 
-### Data Collection Policy
-- **NO personal data collection**: The app does not collect, store, or transmit any personal information
-- **NO user tracking**: No analytics, tracking, or user identification
-- **NO third-party data sharing**: No data is shared with external services
-- **NO external URLs**: Removed all external URL opening that violates children's privacy guidelines
-- **Local storage only**: All game data is stored locally on the device using UserDefaults
+Gizmodo ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and share information when you use our mobile application ("App").
 
-### Privacy Implementation Details
+## Information We Collect
 
-#### 1. Info.plist Configuration
-- Added `NSUserTrackingUsageDescription` with clear statement of no tracking
-- Configured `NSAppTransportSecurity` for secure connections only
-- Set `ITSAppUsesNonExemptEncryption` to false (no encryption used)
-- Added proper privacy API declarations
-- Disabled arbitrary network loads for security
+### Data Collected by Our App
 
-#### 2. Privacy Manifest (PrivacyInfo.xcprivacy)
-- Declared UserDefaults usage with reason CA92.1 (local app functionality)
-- Added required API declarations for FileTimestamp, SystemBootTime, and DiskSpace
-- No data collection types declared
-- Tracking explicitly set to false
-- No tracking domains specified
-- Added NSPrivacyRequiredReasonAPIs section
+Our App collects the following types of data:
 
-#### 3. Code Implementation
-- All data storage is local using UserDefaults
-- **FIXED**: Removed external URL opening - now uses StoreKit for in-app purchases
-- No network requests except for App Store purchases via StoreKit
-- No analytics or crash reporting
-- No user identification or profiling
-- Proper StoreKit integration with loading states and error handling
+#### 1. Device ID
+- **What we collect**: Device identifiers, including advertising identifiers (IDFA)
+- **How we use it**: 
+  - Third-Party Advertising: To display relevant advertisements through AdMob
+  - Analytics: To measure ad performance and user engagement
+  - App Functionality: For fraud prevention and security
+- **Linked to User**: Yes
+- **Used for Tracking**: Yes
 
-### Data Types NOT Collected
-- Personal information
-- Device identifiers
-- Location data
-- Contact information
-- Photos or media
-- Usage analytics
-- Crash reports
-- User behavior tracking
+#### 2. Product Interaction Data
+- **What we collect**: Information about how you interact with the App, including ad views, clicks, taps, and app launches
+- **How we use it**:
+  - Third-Party Advertising: To optimize ad delivery and display relevant ads
+  - Analytics: To understand user behavior and improve the App
+- **Linked to User**: Yes
+- **Used for Tracking**: Yes
 
-### Data Types Stored Locally
-- Game scores (best score, current level)
-- Game progress (free games played, unlimited access status)
-- Game state (current level, timer settings)
+#### 3. Advertising Data
+- **What we collect**: Information about advertisements you see and interact with
+- **How we use it**:
+  - Third-Party Advertising: To display and optimize third-party advertisements
+  - Analytics: To measure ad effectiveness and performance
+- **Linked to User**: Yes
+- **Used for Tracking**: Yes
 
-### App Store Connect Configuration Required
-1. **Age Rating**: Set to 4+ for puzzle games (suitable for children)
-2. **Privacy Labels**: 
-   - Data Collection: None
-   - Data Usage: None
-   - Third-party sharing: None
-   - Tracking: No
-3. **App Review Information**: Include this privacy documentation
-4. **App Description**: Include privacy policy statement
+#### 4. Crash Data
+- **What we collect**: Crash logs and error reports
+- **How we use it**:
+  - Analytics: To understand app stability and identify issues
+  - App Functionality: To improve app performance and minimize crashes
+- **Linked to User**: Yes
+- **Used for Tracking**: No
 
-### Key Fixes Applied for 5.1.4 Rejection
-1. **REMOVED External URL Opening**: No more opening App Store URLs externally
-2. **ADDED Proper StoreKit Integration**: In-app purchases now use StoreKit properly
-3. **ENHANCED Privacy Manifest**: Added all required API declarations
-4. **ADDED Info.plist Keys**: Proper privacy and security configurations
-5. **IMPROVED Error Handling**: Better user experience with loading states
+#### 5. Performance Data
+- **What we collect**: App performance metrics, including launch time, energy use, and system performance
+- **How we use it**:
+  - Analytics: To evaluate app performance and user experience
+  - App Functionality: To improve scalability, performance, and optimize the App
+- **Linked to User**: Yes
+- **Used for Tracking**: No
 
-### Compliance Verification
-- [x] No personal data collection
-- [x] No user tracking
-- [x] No third-party analytics
-- [x] No external URL opening
-- [x] Local storage only
-- [x] Secure network connections only
-- [x] Privacy manifest included with all APIs
-- [x] Info.plist properly configured
-- [x] StoreKit integration without external URLs
-- [x] Proper loading states and error handling
+### Local Game Data
 
-### Resubmission Checklist
-1. ✅ Update App Store Connect with correct privacy labels (None for all categories)
-2. ✅ Set age rating to 4+ (suitable for children)
-3. ✅ Include privacy policy in app description
-4. ✅ Test app functionality with privacy restrictions
-5. ✅ Submit for review with privacy compliance documentation
-6. ✅ Ensure StoreKit products are configured in App Store Connect
+The App also stores game data locally on your device using local storage:
+- Best score
+- Top level reached
+- Game progress
 
-### App Store Connect Privacy Labels (Required)
-- **Data Collection**: None
-- **Data Usage**: None  
-- **Third-party Sharing**: None
-- **Tracking**: No
+This local game data is **NOT** collected, transmitted, or shared with third parties. It remains on your device only.
 
-This app is now fully compliant with children's privacy requirements and App Store guidelines. The external URL opening issue that caused the 5.1.4 rejection has been resolved.
+## Third-Party Services
+
+### Google AdMob
+
+Our App uses Google AdMob to display advertisements. AdMob is a third-party advertising service provided by Google LLC.
+
+**AdMob collects and uses:**
+- Device identifiers (IDFA)
+- Product interaction data
+- Advertising data
+- Crash and performance data (for analytics)
+
+**AdMob's use of data:**
+- To provide, maintain, and improve AdMob services
+- To show you personalized ads
+- To measure ad performance
+- To prevent fraud and abuse
+
+For more information about how Google uses data, please visit: [Google Privacy Policy](https://policies.google.com/privacy)
+
+**AdMob's data sharing:**
+- AdMob may share data with advertisers and partners to deliver relevant ads
+- Data may be shared with analytics providers
+- Data may be used for advertising measurement across apps and websites
+
+## Data Sharing
+
+We share the following data with third parties:
+
+### Third-Party Advertising Partners
+- **Device ID**: Shared with AdMob and advertising partners for ad targeting
+- **Product Interaction Data**: Shared for ad optimization and measurement
+- **Advertising Data**: Shared for ad delivery and performance measurement
+
+### Analytics Partners
+- **Product Interaction Data**: Shared for analytics and user behavior analysis
+- **Advertising Data**: Shared for ad performance measurement
+- **Crash Data**: Shared for app stability analysis
+- **Performance Data**: Shared for app performance optimization
+
+## Your Rights and Choices
+
+### Opt-Out of Personalized Ads
+
+You can opt out of personalized advertising by adjusting your device settings:
+
+**iOS Devices:**
+1. Go to Settings → Privacy & Security → Apple Advertising
+2. Turn off "Personalized Ads"
+
+**Limit Ad Tracking:**
+1. Go to Settings → Privacy & Security → Tracking
+2. Turn off "Allow Apps to Request to Track"
+
+### Data Access and Deletion
+
+You have the right to:
+- Request access to your personal data
+- Request deletion of your personal data
+- Object to processing of your personal data
+
+To exercise these rights, please contact us using the information provided in the "Contact Us" section below.
+
+## Data Security
+
+We implement appropriate technical and organizational measures to protect your data. However, no method of transmission over the internet or electronic storage is 100% secure.
+
+## Children's Privacy
+
+**This App is NOT made for children.** The App is designed for users 9 years and older. We do not knowingly collect personal information from children under the age of 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately.
+
+## International Users
+
+If you are using the App from outside the United States, please be aware that your information may be transferred to, stored, and processed in the United States where our servers are located.
+
+## Compliance
+
+We comply with:
+- General Data Protection Regulation (GDPR)
+- California Consumer Privacy Act (CCPA)
+- Children's Online Privacy Protection Act (COPPA)
+- Apple App Store Guidelines
+
+## Changes to This Privacy Policy
+
+We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
+
+## Contact Us
+
+If you have any questions about this Privacy Policy or our data practices, please contact us:
+
+**Email**: [Your Contact Email]
+**App Support**: [Your Support URL]
+
+## Additional Information
+
+### App Store Privacy Labels
+
+This App's privacy practices are disclosed in the App Store privacy labels, which you can view on the App's App Store page.
+
+### Google AdMob Policies
+
+This App uses AdMob and complies with Google's AdMob policies. For more information, visit:
+- [Google AdMob Policies](https://support.google.com/admob/answer/6128543)
+- [Google Privacy Policy](https://policies.google.com/privacy)
+
+---
+
+**By using this App, you agree to the collection and use of information in accordance with this Privacy Policy.**
